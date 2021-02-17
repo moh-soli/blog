@@ -2,8 +2,14 @@ require 'redcarpet'
 
 module ApplicationHelper
 
+  class HTMLwithPygments < Redcarpet::Render::HTML
+    def block_code(code, lexer: language)
+      pygments.highlight(code, lexer: language)
+    end
+  end
+
     def markdown(content)
-        renderer = Redcarpet::Render::HTML.new(hard_wrap: true, filter_html: true)
+        renderer = HTMLwithPygments.new(hard_wrap: true, filter_html: true, prettify: true)
         options = {
           autolink: true,
           no_intra_emphasis: true,
@@ -12,7 +18,7 @@ module ApplicationHelper
           strikethrough: true,
           superscript: true
         }
-       markdown = Redcarpet::Markdown.new(renderer, options).render(content).html_safe
+        Redcarpet::Markdown.new(renderer, options).render(content).html_safe
 
     end
 end
